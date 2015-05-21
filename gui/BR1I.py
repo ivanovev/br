@@ -5,7 +5,7 @@ from util import Data, alarm_trace_cb, dev_io_cb
 from .BR2I import synth_fmt_cb
 
 def get_ctrl(dev):
-    ctrl = Data('CH1', send=True, io_cb=dev_io_cb)
+    ctrl = Data(name='CH1', send=True, io_cb=dev_io_cb)
     ctrl.add('freq', label='Frequency, MHz', wdgt='spin', value=Data.spn(1350, 1750, 0.01))
     ctrl.add('rfgain', label='RF Gain, dB', wdgt='spin', value=Data.spn(0, 31.5, 0.5))
     ctrl.add('bbgain', label='BB Gain, dB', wdgt='spin', value=Data.spn(0, 50, 0.1))
