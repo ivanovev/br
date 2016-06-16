@@ -1,7 +1,6 @@
 
 from collections import OrderedDict as OD
-from util.mainwnd import control_cb, monitor_cb
-from util import Data, alarm_trace_cb, dev_io_cb
+from util import Data, control_cb, monitor_cb, alarm_trace_cb, dev_io_cb
 from .BR2I import synth_fmt_cb
 
 def get_ctrl(dev):
