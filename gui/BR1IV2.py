@@ -4,10 +4,10 @@ from util import Data, control_cb, monitor_cb, alarm_trace_cb, dev_io_cb
 
 def get_ctrl(dev):
     ctrl = Data(name='CH1', send=True, io_cb=dev_io_cb)
-    ctrl.add('freq', label='Frequency, MHz', wdgt='spin', value=Data.spn(1350, 1750, 0.01))
-    ctrl.add('rfgain', label='RF Gain, dB', wdgt='spin', value=Data.spn(0, 31.5, 0.5))
-    ctrl.add('bbgain', label='BB Gain, dB', wdgt='spin', value=Data.spn(0, 50, 0.1))
-    ctrl.add('lpf', label='Filter, MHz', wdgt='combo', state='readonly', value=['2', '4', '10', '20'], text='10')
+    ctrl.add('freq', label='Frequency, MHz', wdgt='spin', value=Data.spn(356.25, 2850, 0.01))
+    ctrl.add('rfgain', label='RF Gain, dB', wdgt='spin', text='0.0', value=Data.spn(-13.5, 18, 0.5))
+    ctrl.add('bbgain', label='BB Gain, dB', wdgt='spin', value=Data.spn(0, 64.5, 0.5))
+    ctrl.add('lpf', label='Filter, MHz', wdgt='combo', state='readonly', value=['10', '20'], text='10')
     return ctrl
 
 def get_mntr(dev):
