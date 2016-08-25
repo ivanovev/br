@@ -2,6 +2,7 @@
 from util import find_from_table
 from ctl.srv.STM32ETH import STM32ETH_telnet as telnet
 from sg.gui.ADRF6820 import adrf_get_freq, adrf_set_freq
+from sg.gui.LMP92018 import adc_dac_fmt_cb
 
 def BR1IV2_freq(ip_addr='192.168.0.1', freq=''):
     """
@@ -48,23 +49,29 @@ def BR1IV2_rfgain(ip_addr='192.168.0.1', gain=''):
     else:
         return '0'
 
+def BR1IV2_bblpf(ip_addr='192.168.0.1', lpf=''):
+    if lpf:
+        return telnet(ip_addr, 'spi 2.b7 %s 0 0' % lpf)
+    else:
+        return telnet(ip_addr, 'spi 2.b7 0x7FFF 0 0')
+
 def BR1IV2_bbgain(ip_addr='192.168.0.1', gain=''):
     """
     Чтение/установка усиления канала (НЧ)
     @param ip_addr - ip-адрес устройства
-    @param gain - усиление, дБ (0..50)
+    @param gain - усиление, дБ (0..64.5)
     @return gain
     """
-    return telnet(ip_addr, 'bbgain', gain)
-
-def BR1IV2_lpf(ip_addr='192.168.0.1', lpf=''):
-    """
-    Чтение/установка полосы канала
-    @param ip_addr - ip-адрес устройства
-    @param lpf - полоса, МГц (10 или 20)
-    @return lpf
-    """
-    return telnet(ip_addr, 'lpf', lpf)
+    if gain:
+        g = float(gain)*15.5e-3
+        g = adc_dac_fmt_cb(g, False, refin=1, n=3, a=0x50)
+        telnet(ip_addr, 'spi 2.d8 %s 1 0' % g)
+        return gain
+    else:
+        v = telnet(ip_addr, 'spi 2.d8 0xD30000 1 0; spi 2.d8 0x00FFFF 1 0')
+        v = adc_dac_fmt_cb(v, True, refin=1, prc=5)
+        v = float(v)/15.5e-3
+        return '%g' % (round(v * 2) / 2)
 
 def BR1IV2_synth(ip_addr='192.168.0.1'):
     """
@@ -92,4 +99,60 @@ def BR1IV2_uout(ip_addr='192.168.0.1'):
         return '%.2f' % v
     except:
         return '0'
+
+def BR1IV2_vcm1(ip_addr='192.168.0.1'):
+    v = telnet(ip_addr, 'spi 2.d8 0xE10000 1 0; spi 2.d8 0x00FFFF 1 0')
+    v = adc_dac_fmt_cb(v, True)
+    return v
+
+def BR1IV2_vcm2(ip_addr='192.168.0.1'):
+    v = telnet(ip_addr, 'spi 2.d8 0xE50000 1 0; spi 2.d8 0x00FFFF 1 0')
+    v = adc_dac_fmt_cb(v, True)
+    return v
+
+def BR1IV2_5v_1(ip_addr='192.168.0.1'):
+    v = telnet(ip_addr, 'spi 2.d8 0xE40000 1 0; spi 2.d8 0x00FFFF 1 0')
+    v = adc_dac_fmt_cb(v, True, refin=10)
+    return v
+
+def BR1IV2_5v_2(ip_addr='192.168.0.1'):
+    v = telnet(ip_addr, 'spi 2.d8 0xE70000 1 0; spi 2.d8 0x00FFFF 1 0')
+    v = adc_dac_fmt_cb(v, True, refin=10)
+    return v
+
+def BR1IV2_3v3_1(ip_addr='192.168.0.1'):
+    v = telnet(ip_addr, 'spi 2.d8 0xE00000 1 0; spi 2.d8 0x00FFFF 1 0')
+    v = adc_dac_fmt_cb(v, True, refin=10)
+    return v
+
+def BR1IV2_3v3_2(ip_addr='192.168.0.1'):
+    v = telnet(ip_addr, 'spi 2.d8 0xE30000 1 0; spi 2.d8 0x00FFFF 1 0')
+    v = adc_dac_fmt_cb(v, True, refin=10)
+    return v
+
+def BR1IV2_3v3_3(ip_addr='192.168.0.1'):
+    v = telnet(ip_addr, 'spi 2.d8 0xE60000 1 0; spi 2.d8 0x00FFFF 1 0')
+    v = adc_dac_fmt_cb(v, True, refin=10)
+    return v
+
+def BR1IV2_14v(ip_addr='192.168.0.1'):
+    v = telnet(ip_addr, 'spi 2.d8 0xE20000 1 0; spi 2.d8 0x00FFFF 1 0')
+    v = adc_dac_fmt_cb(v, True, refin=43)
+    return v
+
+def BR1IV2_dsplpf(ip_addr='192.168.0.1', lpf=''):
+    if lpf:
+        v = '0'
+        if lpf == '10':
+            v = '0'
+        if lpf == '20':
+            v = '1'
+        return telnet(ip_addr, 'uart 2 mw pio_fir0_bankn %s \\n' % v)
+    else:
+        v = telnet(ip_addr, 'uart 2 mr pio_fir0_bankn \\n')
+        if v == '0':
+            return '10'
+        if v == '1':
+            return '20'
+    return ''
 
