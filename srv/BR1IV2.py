@@ -14,10 +14,10 @@ def BR1IV2_freq(ip_addr='192.168.0.1', freq=''):
     if freq:
         r02, r03, r04, r21, r22 = adrf_set_freq(float(freq), 24)
         telnet(ip_addr, 'spi 2.b6 0x%.2X%.4X 0 0' % (22 << 1, r22))
-        telnet(ip_addr, 'spi 2.b6 0x%.2X%.4X 0 0' % (21 << 1, r21))
         telnet(ip_addr, 'spi 2.b6 0x%.2X%.4X 0 0' % (4 << 1, r04))
         telnet(ip_addr, 'spi 2.b6 0x%.2X%.4X 0 0' % (3 << 1, r03))
         telnet(ip_addr, 'spi 2.b6 0x%.2X%.4X 0 0' % (2 << 1, r02))
+        telnet(ip_addr, 'spi 2.b6 0x%.2X%.4X 0 0' % (21 << 1, r21))
         return freq
     def reg_io(r):
         n = int(r[1:], 16)

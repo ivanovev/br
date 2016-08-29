@@ -29,7 +29,7 @@ def get_mntr(dev):
     mntr.add('3v3_1', label='3V3_1', wdgt='entry', state='readonly', msg='3V3_1')
     mntr.add('3v3_2', label='3V3_2', wdgt='entry', state='readonly', msg='3V3_2')
     mntr.add('3v3_3', label='3V3_3', wdgt='entry', state='readonly', msg='3V3_3')
-    mntr.add('14v', label='14v', wdgt='entry', state='readonly', msg='14v')
+    mntr.add('14v', label='14V', wdgt='entry', state='readonly', msg='14V')
     mntr.cmds.columns=2
     return mntr
 
